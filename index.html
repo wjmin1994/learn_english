@@ -88,6 +88,7 @@ select { width: 100%; padding: 10px 12px; font-size: 16px; border-radius: 10px; 
   </div>
 </div></div>
 
+<script id="articles-data" type="application/json">[{"date": "2026-11-10", "title": "A New Job", "file": "articles/2026-11-10.md", "content": "# 2026-11-10 · A New Job\n\n> 场景：朋友找到了一份新工作 ｜ 目标词：12 个 ｜ 今日墨墨：49 词（新学 9）\n\n## 对话\n\n**Lily:** Hi Tom! You look so happy. What's up?\n**Tom:** Guess what? A small coffee shop wants to **employ** me. I start next Monday!\n**Lily:** Wow, great! Are you **excited**?\n**Tom:** Very! The shop was **established** only two years ago, but it's really popular.\n**Lily:** Did they **mention** the **wage**?\n**Tom:** Yes, fifteen dollars an hour. It's not a lot, but it's **worth** it. I can learn so much there.\n**Lily:** What's special about the shop?\n**Tom:** Their cakes are **unique**. You can't find them anywhere else.\n**Lily:** Sounds lovely. Can I **drop** by after work one day?\n**Tom:** Sure! But don't come too late, **unless** you want to help me clean up.\n**Lily:** Ha ha! Then maybe we can have **supper** together.\n**Tom:** Good idea. Oh, I also need new black shoes. My old ones don't **fit** anymore.\n**Lily:** Let's go shopping this weekend. I'll help you **carry** the bags!\n\n## 中文翻译\n\n**Lily:** 嗨，Tom！你看起来好开心。怎么了？\n**Tom:** 你猜怎么着？一家小咖啡店想雇我。我下周一就上班！\n**Lily:** 哇，太好了！你激动吗？\n**Tom:** 特别激动！这家店两年前才开，但非常受欢迎。\n**Lily:** 他们提到工资了吗？\n**Tom:** 提了，每小时 15 美元。不算多，但很值得，我在那儿能学到很多东西。\n**Lily:** 这家店有什么特别的？\n**Tom:** 他们的蛋糕很独特，别的地方都买不到。\n**Lily:** 听起来真不错。哪天下班后我能顺路过去看看吗？\n**Tom:** 当然！不过别来太晚，除非你想帮我打扫卫生。\n**Lily:** 哈哈！那之后我们可以一起吃晚饭。\n**Tom:** 好主意。哦对了，我还需要一双新的黑鞋，我的旧鞋已经不合脚了。\n**Lily:** 这周末一起去逛街吧，我帮你拎袋子！\n\n## 生词表\n\n| 单词 | 音标 | 释义 | 文中用法 |\n|---|---|---|---|\n| employ | /ɪmˈplɔɪ/ | v. 雇用；使用 | wants to **employ** me 想雇我 |\n| excite | /ɪkˈsaɪt/ | v. 使兴奋；excited adj. 兴奋的，激动的 | Are you **excited**? 你激动吗？ |\n| establish | /ɪˈstæblɪʃ/ | v. 建立，创办 | was **established** two years ago 两年前创办 |\n| mention | /ˈmenʃn/ | v. 提到，说起 | Did they **mention** the wage? 他们提到工资了吗？ |\n| wage | /weɪdʒ/ | n. 工资（通常按小时或按周算） | the **wage** 工资 |\n| worth | /wɜːθ/ | adj. 值得的；值……钱 | it's **worth** it 很值得 |\n| unique | /juˈniːk/ | adj. 独特的，独一无二的 | Their cakes are **unique**. 他们的蛋糕很独特。 |\n| drop | /drɒp/ | v. 掉落；drop by 顺便拜访 | **drop** by after work 下班后顺路过去 |\n| unless | /ənˈles/ | conj. 除非 | **unless** you want to help 除非你想帮忙 |\n| supper | /ˈsʌpə(r)/ | n. 晚饭 | have **supper** together 一起吃晚饭 |\n| fit | /fɪt/ | v. （大小、尺寸）合适 | don't **fit** anymore 不合脚了 |\n| carry | /ˈkæri/ | v. 拿，提，搬 | **carry** the bags 拎袋子 |\n\n## 阅读理解\n\n1. Where is Tom going to work?\n   - A. In a bookstore\n   - B. In a coffee shop\n   - C. In a shoe shop\n   - D. In a restaurant\n2. Why does Tom think the job is **worth** it?\n   - A. The wage is very high.\n   - B. The shop is near his home.\n   - C. He can learn a lot there.\n   - D. He can eat cakes for free.\n3. What does \"**drop** by\" mean in the dialogue?\n   - A. 掉下来\n   - B. 顺便拜访\n   - C. 放弃\n   - D. 下降\n4. What will Lily do this weekend?\n   - A. Help Tom clean the shop.\n   - B. Buy a cake for Tom.\n   - C. Go shopping with Tom.\n   - D. Start a new job.\n\n<details>\n<summary>查看答案<\/summary>\n\n1. B —— Tom 说 \"A small coffee shop wants to employ me.\"\n2. C —— \"It's not a lot, but it's worth it. I can learn so much there.\" 工资不高，但能学到东西。\n3. B —— drop by 是\"顺便拜访、顺路过去\"。\n4. C —— Lily 说 \"Let's go shopping this weekend.\"\n\n<\/details>\n\n<details>\n<summary>今日全部单词（49）<\/summary>\n\n- 新学+忘记：employ, excite, establish\n- 忘记：drop, fit, satisfy, hunt, worth, wage, conversation, unless, supper, expression\n- 新学：mention, unique, mostly, conjunction, contrast, carry\n- 模糊：walk, cost, soon, coast, considering\n- 熟悉：wrong, distance, fail, product, habit, fight, introduce, circle, short, outside, catch, huge, cover, amount, curiously, expert, demand, progress, afford, suit, contradiction, convey, consider, feature, considered\n\n<\/details>\n"}]</script>
 <script>
 const $ = (s) => document.querySelector(s);
 const synth = window.speechSynthesis;
@@ -216,12 +217,22 @@ $("#speed").onclick = e => {
   $("#speed").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
 };
 
+// 文章数据由 scripts/build_index.py 嵌入下方的 #articles-data，单独打开本文件也能用；
+// 若嵌入数据为空，再回退到读取 articles/index.json 和 .md 文件。
+let embedded = [];
+try { embedded = JSON.parse(document.getElementById("articles-data").textContent || "[]"); } catch {}
+
 async function load(file) {
   try {
-    const r = await fetch(file, { cache: "no-cache" });
-    if (!r.ok) throw new Error(r.status);
-    render(await r.text());
-    history.replaceState(null, "", "#" + file.replace(/^articles\/|\.md$/g, ""));
+    const hit = embedded.find(a => a.file === file);
+    let md = hit && hit.content;
+    if (!md) {
+      const r = await fetch(file, { cache: "no-cache" });
+      if (!r.ok) throw new Error(r.status);
+      md = await r.text();
+    }
+    render(md);
+    try { history.replaceState(null, "", "#" + file.replace(/^articles\/|\.md$/g, "")); } catch {}
   } catch (err) {
     $("#lines").innerHTML = `<p class="notice">文章加载失败（${esc(String(err.message))}）。</p>`;
   }
@@ -229,7 +240,8 @@ async function load(file) {
 
 (async () => {
   try {
-    const list = await (await fetch("articles/index.json", { cache: "no-cache" })).json();
+    const list = embedded.length ? embedded
+      : await (await fetch("articles/index.json", { cache: "no-cache" })).json();
     $("#picker").innerHTML = list.map(a => `<option value="${a.file}">${a.date} · ${esc(a.title)}</option>`).join("");
     const want = location.hash.slice(1);
     const hit = list.find(a => a.date === want);

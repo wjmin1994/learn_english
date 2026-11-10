@@ -11,8 +11,8 @@
    - 如果返回 0 个单词（当天没打开 App），就不生成文章，也不提交。
 2. 选词：从列表最前面选 **10–12 个** 目标词。priority 0 的词必须全部用上；不适合放进日常对话的词（如语法术语）可以跳过，换下一个。
 3. 写文章：保存为 `articles/YYYY-MM-DD.md`，严格按下面的格式。
-4. 更新 `README.md` 里的「文章列表」：把新文章加在最上面。然后运行 `python3 scripts/build_index.py` 更新 `articles/index.json`（网页播放器 `index.html` 靠它列出文章）。
-5. 提交并推送到 `main`：提交信息写 `article: YYYY-MM-DD 日常对话（N 个目标词）`。
+4. 更新 `README.md` 里的「文章列表」：把新文章加在最上面。然后运行 `python3 scripts/build_index.py`：它会更新 `articles/index.json`，并把所有文章嵌入 `index.html`（网页播放器靠它显示文章）。
+5. 提交（包括 `index.html`）并推送到 `main`：提交信息写 `article: YYYY-MM-DD 日常对话（N 个目标词）`。
 
 ## 网页播放器
 
