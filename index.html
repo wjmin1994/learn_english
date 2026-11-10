@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日单词对话</title>
+<style>
+:root {
+  --bg: #f7f5f0; --card: #ffffff; --text: #1f2328; --muted: #6a6f76; --line: #e4e0d8;
+  --accent: #2f6fdb; --accent-soft: #e6eefc; --a: #2f6fdb; --b: #c2571a; --b-soft: #fbece2;
+  --playing: #fff4c2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181c; --card: #1f2227; --text: #e8e6e3; --muted: #9aa0a6; --line: #30343a;
+    --accent: #7aa7ff; --accent-soft: #24304a; --a: #7aa7ff; --b: #f0a070; --b-soft: #3a2a20;
+    --playing: #4a4220;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; }
+main { max-width: 720px; margin: 0 auto; padding: 16px 16px 120px; }
+header h1 { font-size: 20px; margin: 8px 0 4px; }
+header p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+select { width: 100%; padding: 10px 12px; font-size: 16px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--card); color: var(--text); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 16px; }
+.card h2 { font-size: 17px; margin: 0 0 12px; }
+.title { font-size: 22px; margin: 0 0 6px; }
+.meta { color: var(--muted); font-size: 14px; margin: 0; }
+.line { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 10px; cursor: pointer; }
+.line + .line { margin-top: 4px; }
+.line.playing { background: var(--playing); }
+.who { flex: none; font-weight: 600; font-size: 13px; padding: 2px 8px; border-radius: 999px; margin-top: 2px;
+  background: var(--accent-soft); color: var(--a); }
+.line.b .who { background: var(--b-soft); color: var(--b); }
+.say { flex: 1; min-width: 0; }
+.en { margin: 0; }
+.en b { color: var(--accent); }
+.line.b .en b { color: var(--b); }
+.zh { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+.hide-zh .zh { display: none; }
+.btn-play { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card); color: var(--text); font-size: 13px; cursor: pointer; }
+.toolbar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line);
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+.toolbar .inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.toolbar button { padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--card);
+  color: var(--text); font-size: 15px; cursor: pointer; }
+.toolbar button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.toolbar .speed { display: flex; gap: 4px; margin-left: auto; }
+.toolbar .speed button { padding: 9px 10px; }
+.toolbar .speed button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.md table { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
+.md th, .md td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
+.md th { color: var(--muted); font-weight: 600; }
+.md td:first-child { white-space: nowrap; }
+.word { color: var(--accent); font-weight: 600; cursor: pointer; }
+.word::after { content: " 🔊"; font-size: 12px; }
+.md ul, .md ol { padding-left: 20px; }
+.md ol > li { margin-bottom: 10px; }
+.md ol ul { list-style: none; padding-left: 4px; }
+.md details { margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.md summary { cursor: pointer; color: var(--accent); }
+.md h2 { font-size: 17px; margin: 20px 0 10px; }
+.md h2:first-child { margin-top: 0; }
+.notice { color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>每日单词对话</h1>
+    <p>点任意一句即可朗读；生词表里的单词也可以点。</p>
+    <select id="picker" aria-label="选择文章"></select>
+  </header>
+  <section class="card" id="head"></section>
+  <section class="card" id="dialogue"><h2>对话</h2><div id="lines"><p class="notice">加载中…</p></div></section>
+  <section class="card md" id="rest"></section>
+</main>
+<div class="toolbar"><div class="inner">
+  <button class="primary" id="playAll">▶ 全部播放</button>
+  <button id="stop">■ 停止</button>
+  <button id="toggleZh">隐藏中文</button>
+  <div class="speed" id="speed">
+    <button data-r="0.7">0.7×</button><button data-r="0.85" class="on">0.85×</button><button data-r="1">1×</button>
+  </div>
+</div></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const synth = window.speechSynthesis;
+let rate = 0.85, voices = [], lines = [], queue = null;
+
+function pickVoices() {
+  const all = synth ? synth.getVoices().filter(v => /^en[-_]/i.test(v.lang)) : [];
+  const score = v => (/en[-_]US/i.test(v.lang) ? 2 : /en[-_]GB/i.test(v.lang) ? 1 : 0)
+    + (/natural|neural|enhanced|premium|samantha|google/i.test(v.name) ? 2 : 0);
+  all.sort((x, y) => score(y) - score(x));
+  voices = all;
+}
+if (synth) { pickVoices(); synth.onvoiceschanged = pickVoices; }
+
+function speak(text, who, onend) {
+  if (!synth) { alert("当前浏览器不支持朗读，请换用 Safari / Chrome / Edge。"); return; }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = rate;
+  if (voices.length) u.voice = voices[who === 1 && voices.length > 1 ? 1 : 0];
+  if (who === 1 && voices.length < 2) u.pitch = 0.8;
+  u.onend = u.onerror = () => onend && onend();
+  synth.speak(u);
+}
+function clearPlaying() { document.querySelectorAll(".line.playing").forEach(e => e.classList.remove("playing")); }
+function stop() { queue = null; if (synth) synth.cancel(); clearPlaying(); }
+function playLine(i, cont) {
+  if (synth) synth.cancel();
+  clearPlaying();
+  const el = document.querySelector(`.line[data-i="${i}"]`);
+  if (!el) { queue = null; return; }
+  el.classList.add("playing");
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  const token = Symbol(); queue = cont ? token : null;
+  speak(lines[i].text, lines[i].who, () => {
+    el.classList.remove("playing");
+    if (cont && queue === token) setTimeout(() => queue === token && playLine(i + 1, true), 350);
+  });
+}
+
+const plain = s => s.replace(/\*\*/g, "");
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const bold = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+
+// 简易 Markdown 渲染（只覆盖文章模板用到的语法：标题、表格、列表、details、段落、加粗）
+const inline = s => bold(s).replace(/`(.+?)`/g, "<code>$1</code>");
+function renderMd(md) {
+  const L = md.split("\n"), out = [];
+  for (let i = 0; i < L.length; ) {
+    const l = L[i];
+    if (!l.trim()) { i++; continue; }
+    if (/^\s*<\/?(details|summary)/.test(l)) { out.push(l); i++; continue; }
+    let m;
+    if ((m = l.match(/^(#{2,4})\s+(.*)$/))) { out.push(`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`); i++; continue; }
+    if (l.startsWith("|")) {
+      const rows = []; while (i < L.length && L[i].startsWith("|")) rows.push(L[i++]);
+      const cells = r => r.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      const body = rows.slice(2).map(r => "<tr>" + cells(r).map(c => `<td>${inline(c)}</td>`).join("") + "</tr>").join("");
+      out.push(`<table><thead><tr>${cells(rows[0]).map(c => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>`);
+      continue;
+    }
+    if (/^\d+\.\s/.test(l) || /^-\s/.test(l)) {
+      const ordered = /^\d+\.\s/.test(l), items = [];
+      while (i < L.length && (/^(\d+\.|-)\s/.test(L[i]) || /^\s+-\s/.test(L[i]))) {
+        const x = L[i++];
+        if (/^\s+-\s/.test(x) && items.length) items[items.length - 1].sub.push(x.replace(/^\s+-\s/, ""));
+        else items.push({ t: x.replace(/^(\d+\.|-)\s/, ""), sub: [] });
+      }
+      const tag = ordered ? "ol" : "ul";
+      out.push(`<${tag}>` + items.map(it => `<li>${inline(it.t)}${it.sub.length ? "<ul>" + it.sub.map(s => `<li>${inline(s)}</li>`).join("") + "</ul>" : ""}</li>`).join("") + `</${tag}>`);
+      continue;
+    }
+    const para = []; while (i < L.length && L[i].trim() && !/^(#|\||<|\d+\.\s|-\s)/.test(L[i])) para.push(L[i++]);
+    if (para.length) out.push(`<p>${para.map(inline).join("<br>")}</p>`); else i++;
+  }
+  return out.join("\n");
+}
+
+function section(md, name) {
+  const m = md.match(new RegExp(`^## ${name}\\s*$([\\s\\S]*?)(?=^## |(?![\\s\\S]))`, "m"));
+  return m ? m[1] : "";
+}
+function parseLines(text) {
+  return text.split("\n").map(l => l.match(/^\*\*(.+?):\*\*\s*(.+)$/)).filter(Boolean).map(m => ({ who: m[1], raw: m[2].trim() }));
+}
+
+function render(md) {
+  stop();
+  const [first, ...body] = md.split("\n");
+  const quote = (md.match(/^>\s*(.+)$/m) || [])[1] || "";
+  $("#head").innerHTML = `<h1 class="title">${esc(first.replace(/^#\s*/, ""))}</h1><p class="meta">${esc(quote)}</p>`;
+
+  const en = parseLines(section(md, "对话"));
+  const zh = parseLines(section(md, "中文翻译"));
+  const speakers = [...new Set(en.map(l => l.who))];
+  lines = en.map((l, i) => ({ ...l, text: plain(l.raw), zh: zh[i] ? plain(zh[i].raw) : "", who: speakers.indexOf(l.who) % 2, name: l.who }));
+  $("#lines").innerHTML = lines.map((l, i) => `
+    <div class="line ${l.who ? "b" : ""}" data-i="${i}">
+      <span class="who">${esc(l.name)}</span>
+      <div class="say"><p class="en">${bold(l.raw)}</p>${l.zh ? `<p class="zh">${esc(l.zh)}</p>` : ""}</div>
+      <button class="btn-play" aria-label="朗读这句">▶</button>
+    </div>`).join("") || `<p class="notice">这篇文章没有找到对话。</p>`;
+
+  const restStart = md.search(/^## 生词表/m);
+  $("#rest").innerHTML = restStart >= 0 ? renderMd(md.slice(restStart)) : "";
+  $("#rest").querySelectorAll("tbody tr td:first-child").forEach(td => {
+    const w = td.textContent.trim();
+    td.innerHTML = `<span class="word" data-w="${esc(w)}">${esc(w)}</span>`;
+  });
+}
+
+document.addEventListener("click", e => {
+  const w = e.target.closest(".word");
+  if (w) { stop(); speak(w.dataset.w, 0); return; }
+  const l = e.target.closest(".line");
+  if (l) playLine(+l.dataset.i, false);
+});
+$("#playAll").onclick = () => playLine(0, true);
+$("#stop").onclick = stop;
+$("#toggleZh").onclick = e => {
+  const hide = document.body.classList.toggle("hide-zh");
+  e.target.textContent = hide ? "显示中文" : "隐藏中文";
+};
+$("#speed").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  rate = +b.dataset.r;
+  $("#speed").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+};
+
+async function load(file) {
+  try {
+    const r = await fetch(file, { cache: "no-cache" });
+    if (!r.ok) throw new Error(r.status);
+    render(await r.text());
+    history.replaceState(null, "", "#" + file.replace(/^articles\/|\.md$/g, ""));
+  } catch (err) {
+    $("#lines").innerHTML = `<p class="notice">文章加载失败（${esc(String(err.message))}）。</p>`;
+  }
+}
+
+(async () => {
+  try {
+    const list = await (await fetch("articles/index.json", { cache: "no-cache" })).json();
+    $("#picker").innerHTML = list.map(a => `<option value="${a.file}">${a.date} · ${esc(a.title)}</option>`).join("");
+    const want = location.hash.slice(1);
+    const hit = list.find(a => a.date === want);
+    if (hit) $("#picker").value = hit.file;
+    $("#picker").onchange = e => load(e.target.value);
+    if (list.length) load($("#picker").value);
+  } catch {
+    $("#lines").innerHTML = `<p class="notice">无法读取文章列表。</p>`;
+  }
+})();
+</script>
+</body>
+</html>
